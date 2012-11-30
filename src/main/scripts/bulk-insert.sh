@@ -1,4 +1,5 @@
 #! /bin/bash
 
 # bulk index
-curl -s -XPOST 'http://localhost:9200/stations/_bulk' --data-binary @target/classes/insert-stations;
+DATA_LOCATION=${project.build.outputDirectory}/insert-stations
+curl -s -XPOST 'http://localhost:9200/stations/_bulk' --data-binary @$DATA_LOCATION;
