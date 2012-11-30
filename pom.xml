@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.diveintojee.poc</groupId>
     <artifactId>elasticsearch-geo</artifactId>
@@ -150,15 +151,62 @@
                 <version>${exec-maven-plugin.version}</version>
                 <executions>
                     <execution>
+                        <id>generate-stations</id>
+                        <configuration>
+                            <mainClass>GenerateStations</mainClass>
+                        </configuration>
                         <phase>verify</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>change-exec-mode</id>
+                        <configuration>
+                            <executable>chmod</executable>
+                            <arguments>
+                                <argument>+x</argument>
+                                <argument>${project.build.outputDirectory}/create-index.sh</argument>
+                                <argument>${project.build.outputDirectory}/bulk-insert.sh</argument>
+                                <argument>${project.build.outputDirectory}/find-by-location.sh</argument>
+                            </arguments>
+                        </configuration>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>create-index</id>
+                        <configuration>
+                            <executable>${project.build.outputDirectory}/create-index.sh</executable>
+                        </configuration>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>bulk-insert</id>
+                        <configuration>
+                            <executable>${project.build.outputDirectory}/bulk-insert.sh</executable>
+                        </configuration>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check-search</id>
+                        <configuration>
+                            <executable>${project.build.outputDirectory}/find-by-location.sh</executable>
+                        </configuration>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
                 </executions>
-                <configuration>
-                    <mainClass>GenerateStations</mainClass>
-                </configuration>
             </plugin>
         </plugins>
     </build>
