@@ -6,6 +6,7 @@
     <groupId>org.diveintojee.poc</groupId>
     <artifactId>elasticsearch-geo</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>elasticsearch-geo webapp</name>
     <url>http://github.com/lgueye/elasticsearch-geo</url>
 
@@ -24,6 +25,7 @@
             <url>http://github.com/lgueye/elasticsearch-geo</url>
         </developer>
     </developers>
+
     <properties>
         <gmavenVersion>1.4</gmavenVersion>
         <gmavenProviderSelection>2.0</gmavenProviderSelection>
@@ -41,8 +43,96 @@
         <java.version>1.6</java.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <jersey.version>1.14</jersey.version>
+        <webapp.module.context>${project.artifactId}</webapp.module.context>
+        <container.host>localhost</container.host>
+        <container.port>9090</container.port>
+        <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
+        <slf4j.version>1.7.2</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
+        <elasticsearch.version>0.19.9</elasticsearch.version>
+        <jackson-mapper-asl.version>1.9.10</jackson-mapper-asl.version>
+        <commons-lang.version>3.1</commons-lang.version>
+        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-codec.version>1.7</commons-codec.version>
+        <commons-io.version>2.4</commons-io.version>
+        <guava.version>13.0.1</guava.version>
+        <!-- tests properties -->
+        <jbehave.embeddables>**/*Story.java</jbehave.embeddables>
+        <jbehave.skip>false</jbehave.skip>
+        <jbehave.threads>1</jbehave.threads>
+        <jbehave.storyTimeoutInSecs>3</jbehave.storyTimeoutInSecs>
+        <jbehave.ignoreFailureInStories>false</jbehave.ignoreFailureInStories>
+        <jbehave.meta.filters>+progress wip</jbehave.meta.filters>
+        <jbehave.version>3.7.3</jbehave.version>
+        <jbehave-site-resources.version>3.1.1</jbehave-site-resources.version>
+        <httpclient.version>4.2.2</httpclient.version>
+        <geocoder-java.version>0.9</geocoder-java.version>
+
     </properties>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons-collections.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -58,16 +148,6 @@
             <groupId>org.jumpmind.symmetric</groupId>
             <artifactId>symmetric-csv</artifactId>
             <version>${symmetric-csv.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -226,6 +306,71 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson-mapper-asl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>${jackson-mapper-asl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-xc</artifactId>
+            <version>${jackson-mapper-asl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.geocoder-java</groupId>
+            <artifactId>geocoder-java</artifactId>
+            <version>${geocoder-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>${jbehave.version}</version>
+            <classifier>resources</classifier>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>${jbehave.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave.site</groupId>
+            <artifactId>jbehave-site-resources</artifactId>
+            <version>${jbehave-site-resources.version}</version>
+            <type>zip</type>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -249,6 +394,28 @@
                 </excludes>
             </resource>
         </resources>
+        <testResources>
+            <!-- Copy .properties files to output and filter them -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/log4j.xml</include>
+                </includes>
+            </testResource>
+            <!-- Copy .xml files to output and do not filter them -->
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/log4j.xml</exclude>
+                </excludes>
+
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -314,7 +481,7 @@
                         <configuration>
                             <mainClass>GenerateStations</mainClass>
                         </configuration>
-                        <phase>verify</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -330,7 +497,7 @@
                                 <argument>${project.build.outputDirectory}/find-by-location.sh</argument>
                             </arguments>
                         </configuration>
-                        <phase>verify</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -340,7 +507,7 @@
                         <configuration>
                             <executable>${project.build.outputDirectory}/create-index.sh</executable>
                         </configuration>
-                        <phase>verify</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -350,7 +517,7 @@
                         <configuration>
                             <executable>${project.build.outputDirectory}/bulk-insert.sh</executable>
                         </configuration>
-                        <phase>verify</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -360,13 +527,171 @@
                         <configuration>
                             <executable>${project.build.outputDirectory}/find-by-location.sh</executable>
                         </configuration>
-                        <phase>verify</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>${maven-jetty-plugin.version}</version>
+                <dependencies>
+                    <!-- If not added, jetty complains about spring namespace schemas location
+                that are not found -->
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                        <version>${spring.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                        <version>${spring.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
+                        <version>${spring.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <contextPath>${webapp.module.context}</contextPath>
+                    <connectors>
+                        <connector
+                                implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <port>${container.port}</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <stopKey>foo</stopKey>
+                    <stopPort>9180</stopPort>
+                    <tmpDirectory>${java.io.tmpdir}</tmpDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>deploy-war</goal>
+                        </goals>
+                        <configuration>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-maven-plugin</artifactId>
+                <version>${jbehave.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                        <version>${log4j.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>com.sun.jdmk</groupId>
+                                <artifactId>jmxtools</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>com.sun.jmx</groupId>
+                                <artifactId>jmxri</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>javax.jms</groupId>
+                                <artifactId>jms</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                        <version>${spring.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-test</artifactId>
+                        <version>${spring.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jbehave</groupId>
+                        <artifactId>jbehave-spring</artifactId>
+                        <version>${jbehave.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-context</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-test</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.jersey.contribs</groupId>
+                        <artifactId>jersey-apache-client4</artifactId>
+                        <version>${jersey.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.httpcomponents</groupId>
+                        <artifactId>httpclient</artifactId>
+                        <version>${httpclient.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-codec</groupId>
+                        <artifactId>commons-codec</artifactId>
+                        <version>${commons-codec.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.jersey</groupId>
+                        <artifactId>jersey-json</artifactId>
+                        <version>${jersey.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>run-stories-as-embeddables</id>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <scope>test</scope>
+                            <includes>
+                                <include>${jbehave.embeddables}</include>
+                            </includes>
+                            <excludes/>
+                            <skip>${jbehave.skip}</skip>
+                            <batch>false</batch>
+                            <threads>${jbehave.threads}</threads>
+                            <storyTimeoutInSecs>${jbehave.storyTimeoutInSecs}
+                            </storyTimeoutInSecs>
+                            <generateViewAfterStories>true</generateViewAfterStories>
+                            <ignoreFailureInStories>${jbehave.ignoreFailureInStories}
+                            </ignoreFailureInStories>
+                            <ignoreFailureInView>false</ignoreFailureInView>
+                            <metaFilters>
+                                <metaFilter>${jbehave.meta.filters}</metaFilter>
+                            </metaFilters>
+                        </configuration>
+                        <goals>
+                            <goal>run-stories-as-embeddables</goal>
+                            <goal>unpack-view-resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
