@@ -10,8 +10,6 @@ class GenerateStations {
                 def name = URLEncoder.encode(fields[3])
                 def township = URLEncoder.encode(fields[4])
                 def type = fields[5]
-//                def postedContent = "'{\"id\": $id, \"name\": \"$name\", \"township\": \"$township\", \"type\": \"$type\", \"location\": {\"lat\": \"$lat\", \"lon\": \"$lng\"}}'"
-//                writer.write "curl -XPOST 'http://localhost:9200/stations/station/$id' -d $postedContent\n"
                 def metadata = "{ \"index\" : { \"_index\" : \"stations\", \"_type\" : \"station\", \"_id\" : \"$id\" } }\n"
                 writer.write metadata
                 def content = "{\"id\": $id, \"name\": \"$name\", \"township\": \"$township\", \"type\": \"$type\", \"location\": {\"lat\": \"$lat\", \"lon\": \"$lng\"}}\n"
