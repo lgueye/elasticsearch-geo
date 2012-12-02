@@ -71,7 +71,6 @@ public class GeoSearchSteps extends BackendBaseSteps {
         String name = urlCodec.decode(String.valueOf(station.getName()), "UTF-8");
         builder.put("name", name);
         builder.put("type", String.valueOf(station.getType()));
-        System.out.println("station = | "+station.getId()+" | "+ name +" | "+station.getType()+" |");
         return builder.build();
     }
 
