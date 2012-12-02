@@ -96,27 +96,38 @@ public class SearchStationsResource {
         LatLng location = result.getGeometry().getLocation();
         BigDecimal lat = location.getLat();
         BigDecimal lng = location.getLng();
-        return SortBuilders
+        GeoDistanceSortBuilder sortBuilder = SortBuilders
                 .geoDistanceSort("location")
                 .point(lng.doubleValue(), lat.doubleValue())
                 .unit(DistanceUnit.KILOMETERS)
                 .order(SortOrder.ASC);
+        LOGGER.info("Resolved sort builder =================================");
+        LOGGER.info(sortBuilder.toString());
+
+        return sortBuilder;
     }
 
     private SearchResponse response(QueryBuilder queryBuilder, GeoDistanceSortBuilder sortBuilder) {
-        return elasticSearch
-                    .prepareSearch("stations")
-                    .setTypes("station")
-                    .setQuery(queryBuilder)
-                    .addSort(sortBuilder)
-                    .execute().actionGet();
+        SearchResponse searchResponse = elasticSearch
+                .prepareSearch("stations")
+                .setTypes("station")
+                .setQuery(queryBuilder)
+                .addSort(sortBuilder)
+                .execute().actionGet();
+        LOGGER.info("Search response =================================");
+        LOGGER.info(searchResponse.toString());
+
+        return searchResponse;
     }
 
     private QueryBuilder queryBuilder() {
         BoolFilterBuilder filterBuilder = FilterBuilders.
                 boolFilter().
                 mustNot(FilterBuilders.termFilter("type", StationType.bus.toString()));
-        return new FilteredQueryBuilder(new MatchAllQueryBuilder(), filterBuilder);
+        FilteredQueryBuilder filteredQueryBuilder = new FilteredQueryBuilder(new MatchAllQueryBuilder(), filterBuilder);
+        LOGGER.info("Resolved query builder =================================");
+        LOGGER.info(filteredQueryBuilder.toString());
+        return filteredQueryBuilder;
     }
 
     private GeocoderResult geocodeProvidedAddress(String address) {
